@@ -6,26 +6,32 @@ public class Produit extends DBTable {
     private String idProduit;
     private String idCategorie;
     private String nom;
-    private String uniteMesure;
-    private double qte;
-    private double prixUnitaire;
+    private double quantite;
+    private double prix;
+    private String img;
+
+    public String getImg() {
+        return this.img;
+    }
+
+    public void setImg(String img) {
+        this.img = img;
+    }
 
     public Produit() {}
 
-    public Produit(String idCategorie, String nom, String uniteMesure, double qte, double prixUnitaire) {
+    public Produit(String idCategorie, String nom, double quantite, double prix,String img) {
         this.idCategorie = idCategorie;
         this.nom = nom;
-        this.uniteMesure = uniteMesure;
-        this.qte = qte;
-        this.prixUnitaire = prixUnitaire;
+        this.quantite = quantite;
+        this.prix = prix;
+        this.img=img;
     }
-    public Produit(String idProduit,String idCategorie, String nom, String uniteMesure, double qte, double prixUnitaire) {
-        this.idProduit=idProduit;
-        this.idCategorie = idCategorie;
+    public Produit( String nom, double quantite, double prix,String img) {
         this.nom = nom;
-        this.uniteMesure = uniteMesure;
-        this.qte = qte;
-        this.prixUnitaire = prixUnitaire;
+        this.quantite = quantite;
+        this.prix = prix;
+        this.img=img;
     }
 
     public String getIdProduit() {
@@ -52,28 +58,20 @@ public class Produit extends DBTable {
         this.nom = nom;
     }
 
-    public String getUniteMesure() {
-        return uniteMesure;
+    public double getQuantite() {
+        return quantite;
     }
 
-    public void setUniteMesure(String uniteMesure) {
-        this.uniteMesure = uniteMesure;
+    public void setQuantite(double quantite) {
+        this.quantite = quantite;
     }
 
-    public double getQte() {
-        return qte;
+    public double getPrix() {
+        return prix;
     }
 
-    public void setQte(double qte) {
-        this.qte = qte;
-    }
-
-    public double getPrixUnitaire() {
-        return prixUnitaire;
-    }
-
-    public void setPrixUnitaire(double prixUnitaire) {
-        this.prixUnitaire = prixUnitaire;
+    public void setPrix(double prix) {
+        this.prix = prix;
     }
 
     public String getNameAuto() {
@@ -89,9 +87,8 @@ public class Produit extends DBTable {
                 "idProduit='" + idProduit + '\'' +
                 ", idCategorie='" + idCategorie + '\'' +
                 ", nom='" + nom + '\'' +
-                ", uniteMesure='" + uniteMesure + '\'' +
-                ", qte=" + qte +
-                ", prixUnitaire=" + prixUnitaire +
+                ", quantite=" + quantite +
+                ", prix=" + prix +
                 '}';
     }
 }

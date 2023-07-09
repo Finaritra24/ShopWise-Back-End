@@ -1,14 +1,21 @@
 package com.projetfy.ecommerce.model;
 
+import com.projetfy.ecommerce.genericDAO.AnnotInsert;
 import com.projetfy.ecommerce.genericDAO.DBTable;
 
 public class Administrateur extends DBTable {
+    @AnnotInsert
     private String idAdmin;
     private String identification;
     private String passwrd;
 
     public Administrateur() {}
 
+    public Administrateur(String idAdmin,String identification, String passwrd) {
+        this.idAdmin=idAdmin;
+        this.identification = identification;
+        this.passwrd = passwrd;
+    }
     public Administrateur(String identification, String passwrd) {
         this.identification = identification;
         this.passwrd = passwrd;

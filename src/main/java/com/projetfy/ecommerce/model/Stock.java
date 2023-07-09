@@ -5,17 +5,11 @@ import com.projetfy.ecommerce.genericDAO.DBTable;
 public class Stock extends DBTable {
     private String idStock;
     private String idProduit;
-    private int nombre;
+    private double nombre;
 
     public Stock() {}
 
-    public Stock(String idProduit, int nombre) {
-        this.idProduit = idProduit;
-        this.nombre = nombre;
-    }
-
-    public Stock(String idst,String idProduit, int nombre) {
-        this.idStock=idst;
+    public Stock(String idProduit, double nombre) {
         this.idProduit = idProduit;
         this.nombre = nombre;
     }
@@ -36,11 +30,11 @@ public class Stock extends DBTable {
         this.idProduit = idProduit;
     }
 
-    public int getNombre() {
+    public double getNombre() {
         return nombre;
     }
 
-    public void setNombre(int nombre) {
+    public void setNombre(double nombre) {
         this.nombre = nombre;
     }
 

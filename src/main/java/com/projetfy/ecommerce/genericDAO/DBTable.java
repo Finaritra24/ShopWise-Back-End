@@ -4,12 +4,13 @@
  * and open the template in the editor.
  */
 package com.projetfy.ecommerce.genericDAO;
-
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Vector;
 // import com.projetfy.gestionvehicule.genericDAO.Connex;
 
@@ -20,7 +21,7 @@ import java.util.Vector;
 public abstract class DBTable {
 
     public abstract String getSeqName();
-
+    
     public String toUpper(String s) {
         return s.substring(0, 1).toUpperCase() + s.substring(1);
     }
@@ -58,7 +59,7 @@ public abstract class DBTable {
                 }
             }
             String requete = "insert into " + nomTable + " (" + tousLesAtr + ") values (" + allValues + ")";
-            // System.out.println(requete);
+            System.out.println(requete);
             stmt = con.prepareStatement(requete);
             stmt.executeUpdate();
         } catch (Exception e) {
@@ -97,19 +98,36 @@ public abstract class DBTable {
         PreparedStatement stmt = con.prepareStatement(req);
         stmt.executeUpdate();
     }
+    public static String toUpperCaseFirst(String str){
+        if (str.length() > 0) {
+            String firstLetter = str.substring(0, 1).toUpperCase();
+            String restOfString = str.substring(1);
 
-    public void update(Connection con) throws Exception {
+            String result = firstLetter + restOfString;
+            return result;
+        } else {
+            System.out.println(str); // Chaîne vide, aucune modification nécessaire
+        }
+        return str;
+    }
+    public void update(Connection con) {
         String req = "update " + getClass().getSimpleName() + " set ";
         String[] attributsName = new String[getClass().getDeclaredFields().length];
         int count = 0;
         if (con == null) {
-            con = Connex.getConnection();
+            try {
+                con = Connex.getConnection();
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
         for (int i = 0; i < attributsName.length; i++) {
             attributsName[i] = getClass().getDeclaredFields()[i].getName();
             attributsName[i] = toUpper(attributsName[i]);
-            Object attributsValues = getClass().getMethod("get" + attributsName[i]).invoke(this);
-
+            Object attributsValues;
+            try {
+                attributsValues = getClass().getMethod("get" + attributsName[i]).invoke(this);
             if ((attributsValues instanceof String && attributsValues != null) || (attributsValues instanceof Integer && (int) attributsValues != 0)) {
                 if (count == 0) {
                     req += attributsName[i] + "=" + "'" + attributsValues.toString() + "'";
@@ -119,28 +137,46 @@ public abstract class DBTable {
                 }
                 count++;
             }
-        }
-
-        req += " where ";
-        for (int i = 0; i < attributsName.length; i++) {
-            attributsName[i] = getClass().getDeclaredFields()[i].getName();
-            attributsName[i] = toUpper(attributsName[i]);
-            Object attributValue = getClass().getMethod("get" + attributsName[i]).invoke(this);
-
-            if (attributsName[i].equalsIgnoreCase("Id")) {
-                req += attributsName[i] + "=";
-                req += "'" + attributValue.toString() + "'";
+        } 
+            catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
+                    | NoSuchMethodException | SecurityException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
         }
-        System.out.println(req);
-        PreparedStatement stmt = con.prepareStatement(req);
-        stmt.executeUpdate();
-        if(con!=null || stmt!=null ){
-            con.close();
-            stmt.close();
+        try {
+            Object attributsValuesId = getClass().getMethod("getId"+getClass().getSimpleName()).invoke(this);
+           req += " where id"+getClass().getSimpleName()+"= '"+attributsValuesId.toString()+"'";
+        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
+                | SecurityException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
-    }
+        // for (int i = 0; i < attributsName.length; i++) {
+        //     attributsName[i] = getClass().getDeclaredFields()[i].getName();
+        //     attributsName[i] = toUpper(attributsName[i]);
+        //     Object attributValue = getClass().getMethod("get" + attributsName[i]).invoke(this);
 
+        //     if (attributsName[i].equalsIgnoreCase("id")) {
+        //         req += attributsName[i] + "=";
+        //         req += "'" + attributValue.toString() + "'";
+        //     }
+        // }
+        System.out.println(req);
+        PreparedStatement stmt;
+        try {
+            stmt = con.prepareStatement(req);
+            stmt.executeUpdate();
+            if(con!=null || stmt!=null ){
+                con.close();
+                stmt.close();
+            }
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+    }
     public DBTable getDbObject(ResultSet r) throws Exception {
         Object DBTable = getClass().newInstance();
 
